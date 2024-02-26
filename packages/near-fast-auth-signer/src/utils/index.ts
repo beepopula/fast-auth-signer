@@ -38,12 +38,12 @@ export const redirectWithError = ({
   success_url,
   error
 }: { failure_url: string; success_url: string; error: Error }): void => {
-  const { message } = error;
-  const validFailureUrl = isUrlNotJavascriptProtocol(failure_url) && failure_url;
-  const validSuccessUrl = isUrlNotJavascriptProtocol(success_url) && success_url;
-  const parsedUrl = new URL(validFailureUrl || validSuccessUrl || window.location.origin + (basePath ? `/${basePath}` : ''));
-  parsedUrl.searchParams.set('reason', message);
-  window.location.replace(parsedUrl.href);
+  // const { message } = error;
+  // const validFailureUrl = isUrlNotJavascriptProtocol(failure_url) && failure_url;
+  // const validSuccessUrl = isUrlNotJavascriptProtocol(success_url) && success_url;
+  // const parsedUrl = new URL(validFailureUrl || validSuccessUrl || window.location.origin + (basePath ? `/${basePath}` : ''));
+  // parsedUrl.searchParams.set('reason', message);
+  // window.location.replace(parsedUrl.href);
 };
 
 /**

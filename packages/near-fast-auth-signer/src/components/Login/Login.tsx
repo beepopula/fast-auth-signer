@@ -49,7 +49,7 @@ function Login() {
   ) => {
     navigate({
       pathname: '/add-device',
-      search:   `email=${params.email}`,
+      search:   `${currentSearchParams.toString()}&email=${params.email}`,
     });
   };
 

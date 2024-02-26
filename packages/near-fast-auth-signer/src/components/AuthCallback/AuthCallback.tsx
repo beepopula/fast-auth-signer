@@ -15,7 +15,8 @@ import {
 import { basePath, networkId } from '../../utils/config';
 import { checkFirestoreReady, firebaseAuth } from '../../utils/firebase';
 import {
-  getAddKeyAction, getAddLAKAction
+  getAddKeyAction, getAddLAKAction,
+  getDeleteKeysAction
 } from '../../utils/mpc-service';
 
 const StyledStatusMessage = styled.div`
@@ -108,10 +109,17 @@ export const onSignIn = async ({
     throw new Error('Account not found, please create an account and try again');
   }
   // TODO: If we want to remove old LAK automatically, use below code and add deleteKeyActions to signAndSendActionsWithRecoveryKey
-  // const existingDevice = await window.firestoreController.getDeviceCollection(publicKeyFak);
-  // // delete old lak key attached to webAuthN public Key
-  // const deleteKeyActions = existingDevice
-  //   ? getDeleteKeysAction(existingDevice.publicKeys.filter((key) => key !== publicKeyFak)) : [];
+  let existingDevice
+  try {
+    publicKeyFak = publicKeyFak ? await window.fastAuthController.getPublicKey() : '';
+    existingDevice = await window.firestoreController.getDeviceCollection(publicKeyFak);
+  } catch (e) {
+
+  }
+  
+  // delete old lak key attached to webAuthN public Key
+  const deleteKeyActions = existingDevice
+    ? getDeleteKeysAction(existingDevice.publicKeys.filter((key) => key !== publicKeyFak)) : [];
 
   // onlyAddLak will be true if current browser already has a FAK with passkey
   const onlyAddLak = !publicKeyFak || publicKeyFak === 'null';
@@ -120,20 +128,23 @@ export const onSignIn = async ({
       publicKeyLak: public_key_lak,
       contractId:   contract_id,
       methodNames,
-      allowance:    new BN('250000000000000'),
+      allowance: null,
     }) : getAddKeyAction({
       publicKeyLak:      public_key_lak,
       webAuthNPublicKey: publicKeyFak,
       contractId:        contract_id,
       methodNames,
-      allowance:         new BN('250000000000000'),
+      allowance: null,
     });
-
+  let actions = addKeyActions
+  if (deleteKeyActions.length > 0) {
+    actions = deleteKeyActions.concat(addKeyActions)
+  }
   return (window as any).fastAuthController.signAndSendActionsWithRecoveryKey({
     oidcToken: accessToken,
     accountId: accountIds[0],
     recoveryPK,
-    actions:   addKeyActions
+    actions
   })
     .then((res) => res.json())
     .then(async (res) => {

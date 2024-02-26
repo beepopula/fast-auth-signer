@@ -15,10 +15,11 @@ function AuthIndicator() {
   }, [authenticated, navigate]);
 
   return (
-    <AuthIndicatorButton data-test-id="auth-indicator-button" $buttonType="secondary" $isSignedIn={authenticated && authenticated !== 'loading'}>
-      {authenticated ? <p>signed in</p>
-        : <p>not signed in</p>}
-    </AuthIndicatorButton>
+    // <AuthIndicatorButton data-test-id="auth-indicator-button" $buttonType="secondary" $isSignedIn={authenticated && authenticated !== 'loading'}>
+    //   {authenticated ? <p>signed in</p>
+    //     : <p>not signed in</p>}
+    // </AuthIndicatorButton>
+    <p></p>
   );
 }
 

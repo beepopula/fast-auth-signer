@@ -146,7 +146,7 @@ class FastAuthController {
     });
     // @ts-ignore
     const nonce = rawAccessKey?.nonce;
-    return new BN(nonce).add(new BN(1));
+    return new BN(nonce).add(new BN(10));
   }
 
   getAccountId() {
